@@ -1,41 +1,132 @@
-#include <iostream> 
-#include <string> 
-#include <vector> 
-#include <random> 
+#include <iostream>
+#include <string>
+#include <iostream>
+#include <random>
 
-using namespace std; 
+using namespace std;
 
-//Код функций рандома.
-string generateRandomPassword() { // Объявление функции random, которая возвращает строку
-	vector<string> random = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
-		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "m", "l", "n", "o", "p"}; // Создание вектора строк с тремя элементами
+string generateRandomPassword(const vector<string>& charSet, int max) {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dist(0, charSet.size() - 1);
 
-	random_device rd; // Создание объекта для генерации случайных чисел
-	mt19937 gen(rd()); // Создание генератора случайных чисел с использованием устройства случайных чисел
-	uniform_int_distribution<> dist(0, random.size() - 1); // Создание объекта для равномерного распределения случайных чисел в диапазоне от min до размера вектора max
-
-	int random_index = dist(gen); // Генерация случайного индекса элемента вектора
-
-	return random[random_index]; // Возврат случайного элемента из вектора
+    string password;
+    for (int i = 0; i < max; ++i) {
+        password += charSet[dist(gen)];
+    }
+    return password;
 }
 
-//Код главной функций.
 int main() {
-	system("chcp 1251 > nul");
+    system("chcp 1251 > nul");
 
-	string password;
-	int max;
+    string numbers, english_characters, special_characters;
+    vector<string> charSet = {};
 
-	cout << "Какое количество символов в пароле вы хотите: ";
-	cin >> max;
+    cout << "В вашем пароле должны быть цифры: ";
+    cin >> numbers;
+    if (numbers == "да") {
+        charSet = { "1", "2", "3",  "4",  "5",  "6",  "7",  "8",  "9",  "0" };
+    }
+    else if (numbers == "нет") {
+        charSet = {};
+    }
+    else {
+        cout << "Ошибка! Некорректный ввод в консоль!" << endl;
+        return 1;
+    }
 
-	for (; max > 0; max--) {
-		password += generateRandomPassword();
-	}
+    cout << "В вашем пароле должны быть английские символы: ";
+    cin >> english_characters;
+    if (english_characters == "да") {
+        if (numbers == "да") {
+            charSet = { "1", "2", "3",  "4",  "5",  "6",  "7",  "8",  "9",  "0",
+        "a", "b", "c",  "d",  "e",  "f",  "g",  "h",  "i",  "j",  "k",  "l",  "m",  "n",
+        "o",  "p",  "q",  "r",  "s",  "t",  "w",  "x",  "y",  "z",
+        "A", "B", "C",  "D",  "E",  "F",  "G",  "H",  "I",  "J",  "K",  "L",  "M",  "N",
+        "O",  "P",  "Q",  "R",  "S",  "T",  "W",  "X",  "Y",  "Z" };
+        }
+        else if (numbers == "нет") {
+            charSet = { "a", "b", "c",  "d",  "e",  "f",  "g",  "h",  "i",  "j",  "k",  "l",  "m",  "n",
+        "o",  "p",  "q",  "r",  "s",  "t",  "w",  "x",  "y",  "z",
+        "A", "B", "C",  "D",  "E",  "F",  "G",  "H",  "I",  "J",  "K",  "L",  "M",  "N",
+        "O",  "P",  "Q",  "R",  "S",  "T",  "W",  "X",  "Y",  "Z" };
+        }
+    }
+    else if (english_characters == "нет") {
+        if (numbers == "да") {
+            charSet = { "1", "2", "3",  "4",  "5",  "6",  "7",  "8",  "9",  "0" };
+        }
+        else if (numbers == "нет") {
+            charSet = {};
+        }
+    }
+    else {
+        cout << "Ошибка! Некорректный ввод в консоль!" << endl;
+        return 1;
+    }
 
-	cout << "Пароль: " << password << endl;
+    cout << "В вашем пароле должны быть специальные символы: ";
+    cin >> special_characters;
+    if (special_characters == "да") {
+        if (english_characters == "да") {
+            if (numbers == "да") {
+                charSet = { "1", "2", "3",  "4",  "5",  "6",  "7",  "8",  "9",  "0",
+                "a", "b", "c",  "d",  "e",  "f",  "g",  "h",  "i",  "j",  "k",  "l",  "m",  "n",
+                "o",  "p",  "q",  "r",  "s",  "t",  "w",  "x",  "y",  "z",
+                "A", "B", "C",  "D",  "E",  "F",  "G",  "H",  "I",  "J",  "K",  "L",  "M",  "N",
+                "O",  "P",  "Q",  "R",  "S",  "T",  "W",  "X",  "Y",  "Z",
+                "-", "_", "+", "=", "(", ")", "*", "&", "?" };
+            }
+            else if (numbers == "нет") {
+                charSet = { "a", "b", "c",  "d",  "e",  "f",  "g",  "h",  "i",  "j",  "k",  "l",  "m",  "n",
+                "o",  "p",  "q",  "r",  "s",  "t",  "w",  "x",  "y",  "z",
+                "A", "B", "C",  "D",  "E",  "F",  "G",  "H",  "I",  "J",  "K",  "L",  "M",  "N",
+                "O",  "P",  "Q",  "R",  "S",  "T",  "W",  "X",  "Y",  "Z",
+                "-", "_", "+", "=", "(", ")", "*", "&", "?" };
+            }
+        }
+        else if (english_characters == "нет") {
+            if (numbers == "да") {
+                charSet = { "1", "2", "3",  "4",  "5",  "6",  "7",  "8",  "9",  "0",
+                "-", "_", "+", "=", "(", ")", "*", "&", "?" };
+            }
+            else if (numbers == "нет") {
+                charSet = { "-", "_", "+", "=", "(", ")", "*", "&", "?" };
+            }
+        }
+    }
+    else if (special_characters == "нет") {
+        if (english_characters == "да") {
+            charSet = { "1", "2", "3",  "4",  "5",  "6",  "7",  "8",  "9",  "0",
+            "a", "b", "c",  "d",  "e",  "f",  "g",  "h",  "i",  "j",  "k",  "l",  "m",  "n",
+            "o",  "p",  "q",  "r",  "s",  "t",  "w",  "x",  "y",  "z",
+            "A", "B", "C",  "D",  "E",  "F",  "G",  "H",  "I",  "J",  "K",  "L",  "M",  "N",
+            "O",  "P",  "Q",  "R",  "S",  "T",  "W",  "X",  "Y",  "Z" };
+        }
+        else if (english_characters == "нет") {
+            if (numbers == "да") {
+                charSet = { "1", "2", "3",  "4",  "5",  "6",  "7",  "8",  "9",  "0" };
+            }
+            else if (numbers == "нет") {
+                cout << "А из чего мне блять тогда пароль печатать долбоёб?";
+                return 1;
+            }
+        }
+    }
+    else {
+        cout << "Ошибка! Некорректный ввод в консоль!" << endl;
+        return 1;
+    }
 
-	system("pause > nul");
+    int max;
+    cout << "Введите желаемое количество символов в пароле: ";
+    cin >> max;
 
-	return 0;
+    string password = generateRandomPassword(charSet, max);
+    cout << "Ваш пароль: " << password << endl;
+
+    system("pause > nul");
+
+    return 0;
 }
